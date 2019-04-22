@@ -1,6 +1,7 @@
 import * as React from "react";
 import styled from "styled-components";
 import _ from "lodash";
+import { scrollTo } from "../../technical/scrollTo";
 
 const LayoutContainer = styled.div`
   width: 100%;
@@ -22,35 +23,38 @@ const PageContainer = styled.div(props => ({
 class HorizontalScrollLayout extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.activePageIndex = 0;
+    this.duration = this.props.duration || 700;
+    this.easing = this.props.easing || "easeOutQuad";
     this.scrollToNextPage = this.scrollToNextPage.bind(this);
   }
 
   componentDidMount() {
-    // console.log(element);
+    // To avoid firing the event too many times
     window.addEventListener("wheel", _.debounce(this.scrollToNextPage, 200));
   }
 
   scrollToNextPage({ deltaY }) {
     const container = document.querySelector("#layout-container");
-    // Mouse wheel up
+
+    // Mouse wheel up, going backward
     if (deltaY < 0) {
-      return container.scrollTo({
-        left:
-          container.scrollLeft > 0
-            ? container.scrollLeft - container.getBoundingClientRect().width
-            : 0
-      });
+      this.activePageIndex = Math.max(0, this.activePageIndex - 1);
+      const nextPageElement = document.querySelector(
+        `#page_${this.activePageIndex}`
+      );
+      return scrollTo(container, nextPageElement, this.duration, this.easing);
     }
 
-    // Mouse wheel down
-    return container.scrollTo({
-      left:
-        container.scrollLeft <
-        container.getBoundingClientRect().width * this.props.pages.length
-          ? container.scrollLeft + container.getBoundingClientRect().width
-          : container.getBoundingClientRect().width * this.props.pages.length
-    });
+    // Mouse wheel down, goig forward
+    this.activePageIndex =
+      this.activePageIndex + 1 < this.props.pages.length - 1
+        ? this.activePageIndex + 1
+        : this.props.pages.length - 1;
+    const nextPageElement = document.querySelector(
+      `#page_${this.activePageIndex}`
+    );
+    return scrollTo(container, nextPageElement, this.duration, this.easing);
   }
 
   render() {
