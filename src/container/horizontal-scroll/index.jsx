@@ -1,8 +1,9 @@
-import * as React from "react";
-import styled from "styled-components";
-import _ from "lodash";
-import { scrollTo } from "../../technical/scrollTo";
+import * as React from 'react';
+import styled from 'styled-components';
+import _ from 'lodash';
+import { scrollTo } from '../../technical/scrollTo';
 
+// @Todo  move this component in its own folder (/components/[HERE])
 const LayoutContainer = styled.div`
   width: 100%;
   height: 100%;
@@ -11,13 +12,14 @@ const LayoutContainer = styled.div`
   white-space: nowrap;
 `;
 
+// @Todo move this component in its own folder (/components/[HERE])
 const PageContainer = styled.div(props => ({
-  position: "relative",
-  width: "100%",
-  height: "100%",
-  border: "1px dashed black",
-  boxSizing: "border-box",
-  display: "inline-block"
+  position: 'relative',
+  width: '100%',
+  height: '100%',
+  border: '1px dashed black',
+  boxSizing: 'border-box',
+  display: 'inline-block'
 }));
 
 class HorizontalScrollLayout extends React.Component {
@@ -25,17 +27,19 @@ class HorizontalScrollLayout extends React.Component {
     super(props);
     this.activePageIndex = 0;
     this.duration = this.props.duration || 700;
-    this.easing = this.props.easing || "easeOutQuad";
+    this.easing = this.props.easing || 'easeOutQuad';
     this.scrollToNextPage = this.scrollToNextPage.bind(this);
   }
 
   componentDidMount() {
-    // To avoid firing the event too many times
-    window.addEventListener("wheel", _.debounce(this.scrollToNextPage, 200));
+    // To avoid firing the event too many times, be sure that this is the way to go
+    // @Todo use the same debounce time as the animation duration to avoid animation quirk
+    window.addEventListener('wheel', _.debounce(this.scrollToNextPage, 200));
   }
 
+  // This function should be simplified
   scrollToNextPage({ deltaY }) {
-    const container = document.querySelector("#layout-container");
+    const container = document.querySelector('#layout-container');
 
     // Mouse wheel up, going backward
     if (deltaY < 0) {
@@ -58,11 +62,13 @@ class HorizontalScrollLayout extends React.Component {
   }
 
   render() {
+    // @Todo Test the pages behaviour in real conditions
     const { pages = [] } = this.props;
     return (
       <LayoutContainer id="layout-container">
         {pages.map((component, i) => {
           return (
+            // Index as key is not a good id, use uuid
             <PageContainer id={`page_${i}`} key={i}>
               {component}
             </PageContainer>

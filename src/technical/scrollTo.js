@@ -1,24 +1,24 @@
-import { easings } from "./easings";
+import { easings } from './easings';
 
-// Function adapted fromhttps://pawelgrzybek.com/page-scroll-in-vanilla-javascript/
+// Function adapted from https://pawelgrzybek.com/page-scroll-in-vanilla-javascript/
 
 export function scrollTo(
   container,
   destination,
   duration = 200,
-  easingType = "linear",
+  easingType = 'linear',
   callback
 ) {
   const start = container.scrollLeft;
   const startTime =
-    "now" in window.performance ? performance.now() : new Date().getTime();
+    'now' in window.performance ? performance.now() : new Date().getTime();
 
   const destinationOffsetToScroll =
-    typeof destination === "number" ? destination : destination.offsetLeft;
+    typeof destination === 'number' ? destination : destination.offsetLeft;
 
   function scroll() {
     const now =
-      "now" in window.performance ? performance.now() : new Date().getTime();
+      'now' in window.performance ? performance.now() : new Date().getTime();
     const time = Math.min(1, (now - startTime) / duration);
     const timeFunction = easings[easingType](time);
 
